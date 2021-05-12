@@ -8,9 +8,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import javax.jms.JMSException;
 import javax.jms.Queue;
-import javax.jms.QueueConnection;
 import javax.jms.QueueConnectionFactory;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -28,7 +26,7 @@ import javax.naming.NamingException;
 public class RunProducersTest {
 
 	// Parameter to select the number of producers running concurrently in the thread pool
-	private static final int NPRODUCERS = 1;
+	private static final int NPRODUCERS = 2;
 
 	// Pool of Queue connections
 	private static final String factoryName = "Factoria1"; 	
@@ -99,12 +97,11 @@ public class RunProducersTest {
 
 			// Reference to message queue
 			Queue queue = (Queue)jndi.lookup(queueName);				
-			QueueConnection connection = factory.createQueueConnection();
 
 			// Running producers over the thread pool
 			for (int count = 0; count < NPRODUCERS; count++) {
 
-				P2PSender sender = new P2PSender(connection, queue);
+				P2PSender sender = new P2PSender(factory, queue);
 
 				// We run a pool thread with the task and add the running result to the result list
 				ProdResultList.add(ProdPool.submit(sender)); 
@@ -113,9 +110,6 @@ public class RunProducersTest {
 		} catch (NamingException e) {
 			e.printStackTrace();
 			System.out.println("Producers's Test finished with error: ");
-		} catch (JMSException e) {
-			System.out.println("Producers's Test finished with error: ");
-			e.printStackTrace();
 		}
 		
 		// Closing thread pool

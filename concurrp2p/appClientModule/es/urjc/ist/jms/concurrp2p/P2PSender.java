@@ -1,7 +1,6 @@
 package es.urjc.ist.jms.concurrp2p;
 
 import java.util.concurrent.Callable;
-
 import javax.jms.*;
 
 /**
@@ -13,31 +12,37 @@ import javax.jms.*;
  * @authors Juan Antonio Ortega Aparicio & César Borao Moratinos
  * @version 1.0, 10/05/2021
  */
-
 public class P2PSender implements Callable<String> {		
 
-	// Queue name
-	private static final String queueName = "Cola1"; 
+	private static final String queueName   = "Cola1";  // Queue name
+	private static final int    NMESSAGE    = 3;        // Number of messages 
+	private static final int    MILISLEEP   = 1000;     // ms sleeping time      
 
 	// Common parameters to all the sender threads
-	private QueueConnection connection;
+	private QueueConnectionFactory factory;
 	private Queue queue;
 
+	
 	/**
 	 * Constructor with arguments. It requires the common parameters to all the sender threads.
 	 * 
 	 * @param connection
 	 * @param queue
 	 */
-	public P2PSender(QueueConnection connection, Queue queue) {
-		this.connection = connection;
+	public P2PSender(QueueConnectionFactory factory, Queue queue) {
+		this.factory = factory;
 		this.queue = queue;
 	}
 
+	/**
+	 * Method that overrides call() method from Callable that sends NMESSAGES to the Queue
+	 */
 	@Override
 	public String call() {
 
 		try {
+			QueueConnection connection = factory.createQueueConnection();
+			
 			// Create session and activate auto-commit
 			QueueSession session = connection.createQueueSession(false,
 					QueueSession.AUTO_ACKNOWLEDGE);	
@@ -46,12 +51,12 @@ public class P2PSender implements Callable<String> {
 
 			// Creating and sending messages to the queue
 			TextMessage msg = session.createTextMessage();
-			for(int i = 0; i < 3; i++){
+			for(int i = 0; i < NMESSAGE; i++){
 
 				msg.setText("Mensaje number " + i + " to " + "Cola1");
 				sender.send(msg);
 				System.err.println("Sending message " + i + " to " + queueName);
-				Thread.sleep(1000);
+				Thread.sleep(MILISLEEP);
 			}
 			System.err.println("Sending message to close connection...");
 
@@ -59,9 +64,9 @@ public class P2PSender implements Callable<String> {
 			msg.setText("CLOSE");
 			sender.send(msg);
 
-			// Closes the connection, the session and the receiver
-			connection.close();  
-			System.err.println("Closing sender...");
+			connection.close();  //closes the connection, the session and the receiver
+			System.err.println("Closing individual sender...");
+			
 			return "SUCCESS: Sender in thread " + Thread.currentThread().getId();
 
 		} catch (JMSException ex) {

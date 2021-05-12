@@ -8,9 +8,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import javax.jms.JMSException;
 import javax.jms.Queue;
-import javax.jms.QueueConnection;
 import javax.jms.QueueConnectionFactory;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -28,7 +26,7 @@ import javax.naming.NamingException;
 public class RunConsumersTest {
 
 	// Parameter to select the number of consumers running concurrently in the thread pool
-	private static final int NCONSUMERS = 4;
+	private static final int NCONSUMERS = 2;
 	
 	// Create a new thread pool to run producers concurrently
 	private static ExecutorService ConsPool = Executors.newFixedThreadPool(NCONSUMERS);
@@ -98,12 +96,11 @@ public class RunConsumersTest {
 			
 			// Reference to message queue
 			Queue queue = (Queue)jndi.lookup(queueName);
-			QueueConnection connection = factory.createQueueConnection();
 
 			// Running consumers over the thread pool
 			for (int count = 0; count < NCONSUMERS; count++) {
 
-				P2PAsyncReceiver receiver = new P2PAsyncReceiver(connection, queue);
+				P2PAsyncReceiver receiver = new P2PAsyncReceiver(factory, queue);
 				
 				// We run a pool thread with the task and add the result to the result list
 				ConsResultList.add(ConsPool.submit(receiver)); 
@@ -112,15 +109,12 @@ public class RunConsumersTest {
 		} catch (NamingException ex) {
 			System.out.println("Consumer's Test finished with error: ");
 			ex.printStackTrace();
-		} catch (JMSException ex) {
-			System.out.println("Consumer's Test finished with error: ");
-			ex.printStackTrace();
-		}
 		
 		// Closing thread pool
 		shutdownAndAwaitTermination(60, 60);
 
 		// Recovering results
 		recoverResults();
+		}
 	}
 }

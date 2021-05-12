@@ -15,26 +15,36 @@ import javax.jms.*;
  */
 public class P2PAsyncReceiver implements Callable<String>, MessageListener{
 
-	private QueueConnection connection;
-	private Queue queue;
-	private boolean stopFlag;
+	private static final int MILISLEEP = 1000;    // ms sleeping time
+	private static final String STOP   = "CLOSE"; // Message received to stop Consumer threads
+
+	private QueueConnectionFactory factory;
+	private Queue queue;		// Queue where we receive messages
+	private boolean stopFlag;	// Flag that stops the Threads
 
 	/**
 	 * Constructor with arguments. It requires the common parameters to all the consumer threads.
 	 * 
-	 * @param connection
 	 * @param queue
 	 */
-	public P2PAsyncReceiver(QueueConnection connection, Queue queue){
-		this.connection = connection;
+	public P2PAsyncReceiver(QueueConnectionFactory factory, Queue queue){
+		this.factory = factory;
 		this.queue = queue;
 		stopFlag = false;
 	}
 
+	
+	/**
+	 * Overridden method from Callable that establish a new concurrent connection with the Payara Server.
+	 * It represents the consumer concurrent method in the producer/consumer pattern.
+	 */
 	@Override
 	public String call(){
 		
 		try {   
+			// Create new connection for the consumer thread
+			QueueConnection connection = factory.createQueueConnection();
+			
 			// Create session and activate auto-commit
 			QueueSession session = 
 					connection.createQueueSession(false, QueueSession.AUTO_ACKNOWLEDGE);
@@ -42,25 +52,30 @@ public class P2PAsyncReceiver implements Callable<String>, MessageListener{
 			// Creating receiver and link it to a Message Listener (to handle messages asynchronously)
 			QueueReceiver receiver = session.createReceiver(queue);
 			receiver.setMessageListener(this);
+			
 			connection.start();
 			System.out.println("Thread " + Thread.currentThread().getId() + " listening!");
 			
 			while (!stopFlag) {
-				Thread.sleep(1000);
+				Thread.sleep(MILISLEEP);
 			}
-			System.err.println("TRACE: Return Thread");
-			return "SUCCESS: Consumer in thread " + Thread.currentThread().getId();
+			
+			System.err.println("TRACE: Return Thread " + Thread.currentThread().getId());
+			return "SUCCESS: Consumer in thread " + Thread.currentThread().getId() + " closed";
 			
 		} catch (JMSException ex) {
 			ex.printStackTrace();
 		} catch (InterruptedException ex) {
 			Thread.currentThread().interrupt();
 		}
-		return "FAIL: Consumer in thread " + Thread.currentThread().getId();
+		
+		System.err.println("Closing individual sender...");
+		return "WARNING: Consumer in thread " + Thread.currentThread().getId() + " not ended";
 	}
 
+	
 	/**
-	 * Method override to handle received messages (asynchronously)
+	 * Overridden method to handle received messages (asynchronously)
 	 * 
 	 * @param msg the message to handle
 	 */
@@ -69,8 +84,8 @@ public class P2PAsyncReceiver implements Callable<String>, MessageListener{
 		try {
 			TextMessage m = (TextMessage)msg;
 			
-			if (Objects.equals(m.getText(), "CLOSE")){
-				System.out.println("No more messages. Closing now thead: " + Thread.currentThread().getId());
+			if (Objects.equals(m.getText(), STOP)){
+				System.out.println("No more messages. Closing now thread: " + Thread.currentThread().getId());
 				
 				//Enable condition to stop current Thread
 				stopFlag = true; 
