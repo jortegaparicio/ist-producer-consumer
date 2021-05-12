@@ -56,7 +56,7 @@ public class P2PAsyncReceiver implements Callable<String>, MessageListener{
 		} catch (InterruptedException ex) {
 			Thread.currentThread().interrupt();
 		}
-		return "FAIL: Comsumer in thread " + Thread.currentThread().getId();
+		return "FAIL: Consumer in thread " + Thread.currentThread().getId();
 	}
 
 	/**

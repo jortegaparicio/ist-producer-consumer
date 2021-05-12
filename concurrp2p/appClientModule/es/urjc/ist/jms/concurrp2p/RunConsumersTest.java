@@ -109,14 +109,6 @@ public class RunConsumersTest {
 				ConsResultList.add(ConsPool.submit(receiver)); 
 			}
 			
-			// Closing thread pool
-			shutdownAndAwaitTermination(60, 60);
-
-			// Recovering results
-			recoverResults();
-			
-			System.out.println("Consumer's Test finished successfully");
-			
 		} catch (NamingException ex) {
 			System.out.println("Consumer's Test finished with error: ");
 			ex.printStackTrace();
@@ -124,5 +116,11 @@ public class RunConsumersTest {
 			System.out.println("Consumer's Test finished with error: ");
 			ex.printStackTrace();
 		}
+		
+		// Closing thread pool
+		shutdownAndAwaitTermination(60, 60);
+
+		// Recovering results
+		recoverResults();
 	}
 }

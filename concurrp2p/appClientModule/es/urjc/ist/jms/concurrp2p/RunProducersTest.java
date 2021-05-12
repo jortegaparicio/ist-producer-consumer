@@ -109,17 +109,19 @@ public class RunProducersTest {
 				// We run a pool thread with the task and add the running result to the result list
 				ProdResultList.add(ProdPool.submit(sender)); 
 			}
-
-			// Closing thread pool
-			shutdownAndAwaitTermination(60, 60);
-
-			// Recovering results
-			recoverResults();
-
+			
 		} catch (NamingException e) {
 			e.printStackTrace();
+			System.out.println("Producers's Test finished with error: ");
 		} catch (JMSException e) {
+			System.out.println("Producers's Test finished with error: ");
 			e.printStackTrace();
 		}
+		
+		// Closing thread pool
+		shutdownAndAwaitTermination(60, 60);
+
+		// Recovering results
+		recoverResults();
 	}
 }
