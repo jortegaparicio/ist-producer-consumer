@@ -4,7 +4,7 @@
 		    	Autores: Juan Antonio Ortega Aparicio
 					 César Borao Moratinos
 					 
-				Fecha: 12/05/21
+			Fecha: 12/05/21
 			
 					 
 En esta primera parte de la práctica final de IST se ha implementado un servicio de JMS producer-consumer de forma concurrente y con recepción asíncrona. Lanzaremos varios producers y consumers que interactuarán sobre la misma Cola (Queue) de forma concurrente.
