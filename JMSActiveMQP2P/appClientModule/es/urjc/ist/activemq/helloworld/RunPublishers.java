@@ -80,7 +80,7 @@ public class RunPublishers {
 
 			// Tell the producer to send the CLOSE message
 			closer.send(message);
-			System.err.println("Sending CLOSE message " + " to Topic");
+			System.err.println("Sending CLOSE message to Topic");
 			
 			closer.close();
 			session.close();

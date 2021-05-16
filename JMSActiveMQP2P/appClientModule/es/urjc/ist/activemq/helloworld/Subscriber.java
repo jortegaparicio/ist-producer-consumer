@@ -14,7 +14,7 @@ import javax.jms.MessageListener;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 
-public class Subscriber implements Runnable, ExceptionListener{
+public class Subscriber implements Runnable, ExceptionListener, MessageListener{
 	
 	//URL of the JMS server. DEFAULT_BROKER_URL will just mean that JMS server is on localhost
     // private static String url = ActiveMQConnection.DEFAULT_BROKER_URL;  // "tcp://localhost:61616"
@@ -33,9 +33,6 @@ public class Subscriber implements Runnable, ExceptionListener{
 	}
 	
     public void run() {
-    	
-		//    	System.out.println("Default broker URL is: " + url);
-		//    	System.out.println();
     	
         try {
         	
@@ -65,26 +62,28 @@ public class Subscriber implements Runnable, ExceptionListener{
 
             // Create a MessageConsumer from the Session to the Topic or Queue
             MessageConsumer consumer = session.createConsumer(destination);
-          //  MessageListenerAsync listener = new MessageListenerAsync();
-            //consumer.setMessageListener(listener);
+           
+            consumer.setMessageListener(this);
 
-            // Wait for a message
+            // Wait for messaages
             while(!stopFlag) {
-
-            	Message message = consumer.receive(3000);
-            
-            	if (message instanceof TextMessage) {
-            		TextMessage textMessage = (TextMessage) message;
-            		if (Objects.equals(textMessage.getText(), STOP)) {
-            			stopFlag = true;
-            			System.err.print("No more messages. Closing now listener running in thread:" + Thread.currentThread().getId() + "\n");
-            		} else {
-            			System.out.println("Listener, Thread " + Thread.currentThread().getId() + " message received: " + textMessage.getText());
-
-            		}  
-            	}
+            		
+            	Thread.sleep(MILISLEEP);
+//            	Message message = consumer.receive(3000);
+//            
+//            	if (message instanceof TextMessage) {
+//            		TextMessage textMessage = (TextMessage) message;
+//            		if (Objects.equals(textMessage.getText(), STOP)) {
+//            			stopFlag = true;
+//            			System.err.print("No more messages. Closing now listener running in thread:" + Thread.currentThread().getId() + "\n");
+//            		} else {
+//            			System.out.println("Listener, Thread " + Thread.currentThread().getId() + " message received: " + textMessage.getText());
+//
+//            		}  
+//            	}
             }
            
+            System.err.println("TRACE: Return Thread: " + Thread.currentThread().getId());
             consumer.close();
             session.close();
             connection.close();
@@ -95,10 +94,24 @@ public class Subscriber implements Runnable, ExceptionListener{
     }
     
    
+    @Override
+    public void onMessage(Message msg) {
+    	try {
+    		
+    		TextMessage textMessage = (TextMessage) msg;
+    		String text = textMessage.getText();
+    		if (Objects.equals(text, STOP)) {
+    			System.err.println("No more messages. Closing now listener running in thread: " + Thread.currentThread().getId());
+    			stopFlag = true;
+    		} else {
+    			System.out.println("Listener, Thread " + Thread.currentThread().getId() + " message received: " + textMessage.getText());
+    		}
+    	} catch (JMSException ex){
+    		ex.printStackTrace();
+    	}
+    }
     
     public synchronized void onException(JMSException ex) {
         System.out.println("JMS Exception occured.  Shutting down client.");
     }
-
-
 }
