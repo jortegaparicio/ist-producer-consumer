@@ -10,8 +10,6 @@ import javax.jms.TextMessage;
 
 public class Publisher implements Runnable {
 	
-	//URL of the JMS server. DEFAULT_BROKER_URL will just mean that JMS server is on localhost
-    // private static String url = ActiveMQConnection.DEFAULT_BROKER_URL;  // "tcp://localhost:61616"
 	private static final String TOPIC_NAME = "Topic"; 
 	private static final int NMESSAGES = 3; 
 	
