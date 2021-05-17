@@ -22,17 +22,18 @@ import javax.naming.NamingException;
  * <p>
  * @authors Juan Antonio Ortega Aparicio & César Borao Moratinos
  * @version 1.0, 10/05/2021
+ * 
  */
 public class RunProducersTest {
 
 	// Parameter to select the number of producers running concurrently in the thread pool
-	private static final int NPRODUCERS = 2;
-
+	private static final int NPRODUCERS = 15;
+	
 	// Pool of Queue connections
-	private static final String factoryName = "Factoria1"; 	
+	private static final String FACTORY_NAME = "Factoria1";
 
 	// Ordered message Queue
-	private static final String queueName = "Cola1"; 
+	private static final String QUEUE_NAME = "Cola1"; 		
 
 	// Create a new thread pool to run producers concurrently
 	private static ExecutorService ProdPool = Executors.newFixedThreadPool(NPRODUCERS);
@@ -41,6 +42,7 @@ public class RunProducersTest {
 	private static List<Future<String>> ProdResultList = new ArrayList<Future<String>>(NPRODUCERS);
 
 
+	
 	/**
 	 * Method to close the ExecutorService in two stages: first avoiding running new
 	 * tasks in the pool and after, requesting the tasks running to finish.
@@ -70,6 +72,8 @@ public class RunProducersTest {
 	 * producers' execution.
 	 */
 	private static void recoverResults() {
+		
+		System.out.println("\nExecution Summary: ");
 		for (Future<String> task : ProdResultList) {
 			if(task.isDone()) {
 				try {
@@ -87,16 +91,17 @@ public class RunProducersTest {
 
 	public static void main(String[] args) {
 
-		// Recover initial context (JNDI)	
 		try {
+			
+			// Recover initial context (JNDI)	
 			InitialContext jndi = new InitialContext();		
 
 			// Reference to connection factory
 			QueueConnectionFactory factory = 
-					(QueueConnectionFactory)jndi.lookup(factoryName);
+					(QueueConnectionFactory)jndi.lookup(FACTORY_NAME);
 
 			// Reference to message queue
-			Queue queue = (Queue)jndi.lookup(queueName);				
+			Queue queue = (Queue)jndi.lookup(QUEUE_NAME);				
 
 			// Running producers over the thread pool
 			for (int count = 0; count < NPRODUCERS; count++) {
@@ -108,8 +113,8 @@ public class RunProducersTest {
 			}
 			
 		} catch (NamingException e) {
-			e.printStackTrace();
 			System.out.println("Producers's Test finished with error: ");
+			e.printStackTrace();
 		}
 		
 		// Closing thread pool
@@ -117,5 +122,7 @@ public class RunProducersTest {
 
 		// Recovering results
 		recoverResults();
+		
+		System.err.println("\nEND");
 	}
 }

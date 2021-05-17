@@ -26,19 +26,20 @@ import javax.naming.NamingException;
 public class RunConsumersTest {
 
 	// Parameter to select the number of consumers running concurrently in the thread pool
-	private static final int NCONSUMERS = 2;
+	private static final int NCONSUMERS = 15;
+
+	// Pool of Queue connections
+	private static final String FACTORY_NAME = "Factoria1"; 	
+
+	// Ordered message Queue
+	private static final String QUEUE_NAME = "Cola1"; 
 	
 	// Create a new thread pool to run producers concurrently
 	private static ExecutorService ConsPool = Executors.newFixedThreadPool(NCONSUMERS);
 
-	// Pool of Queue connections
-	private static final String factoryName = "Factoria1"; 	
-
-	// Ordered message Queue
-	private static final String queueName = "Cola1"; 
-
 	// Initialize the result list
 	private static List<Future<String>> ConsResultList = new ArrayList<Future<String>>(NCONSUMERS);
+	
 	
 	/**
 	 * Method to close the ExecutorService in two stages: first avoiding running new
@@ -49,8 +50,8 @@ public class RunConsumersTest {
 	 */
 	private static void shutdownAndAwaitTermination(int firstTimeout, int secondTimeout) {
 		ConsPool.shutdown(); 
+		
 		try {
-
 			if (!ConsPool.awaitTermination(firstTimeout, TimeUnit.SECONDS)) {
 				System.err.println("Uncompleted tasks. forcing closure...");
 				ConsPool.shutdownNow(); 
@@ -69,33 +70,37 @@ public class RunConsumersTest {
 	 * producers' execution.
 	 */
 	private static void recoverResults() {
+		
+		System.out.println("\nExecution Summary: ");
 		for (Future<String> task : ConsResultList) {
 			if(task.isDone()) {
 				try {
 					System.out.println("Result: " + task.get());
 				} catch (InterruptedException | ExecutionException ex) {
-					System.out.print("Thread interrupted or" +
+					System.err.print("Thread interrupted or" +
 							" execution failed");
 					ex.printStackTrace();
 				}
 			} else {
-				System.out.println("unfinished task");
+				System.err.println("unfinished task");
 			}
 		} 
 	}
 	
 	public static void main(String[] args) {
 
-		// Recover initial context (JNDI)	
+		
 		try {
+			
+			// Recover initial context (JNDI)	
 			InitialContext jndi = new InitialContext();
 			
 			// Reference to connection factory
 			QueueConnectionFactory factory = 
-					(QueueConnectionFactory)jndi.lookup(factoryName);
+					(QueueConnectionFactory)jndi.lookup(FACTORY_NAME);
 			
 			// Reference to message queue
-			Queue queue = (Queue)jndi.lookup(queueName);
+			Queue queue = (Queue)jndi.lookup(QUEUE_NAME);
 
 			// Running consumers over the thread pool
 			for (int count = 0; count < NCONSUMERS; count++) {
@@ -107,14 +112,16 @@ public class RunConsumersTest {
 			}
 			
 		} catch (NamingException ex) {
-			System.out.println("Consumer's Test finished with error: ");
+			System.err.println("Consumer's Test finished with error: ");
 			ex.printStackTrace();
 		
+		}
 		// Closing thread pool
 		shutdownAndAwaitTermination(60, 60);
 
 		// Recovering results
 		recoverResults();
-		}
+		
+		System.err.println("\nEND");
 	}
 }
