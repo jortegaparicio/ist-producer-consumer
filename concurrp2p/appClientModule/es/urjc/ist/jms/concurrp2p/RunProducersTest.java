@@ -41,7 +41,6 @@ public class RunProducersTest {
 	// Initialize the result list
 	private static List<Future<String>> ProdResultList = new ArrayList<Future<String>>(NPRODUCERS);
 
-
 	
 	/**
 	 * Method to close the ExecutorService in two stages: first avoiding running new
@@ -66,6 +65,7 @@ public class RunProducersTest {
 		}
 	}
 
+	
 	/**
 	 * Method to fill the result list with the threads' execution results.
 	 * It uses the {@link java.util.concurrent.Callable<V>} to know the result of the 
@@ -89,6 +89,11 @@ public class RunProducersTest {
 		} 
 	}
 
+	
+	/**
+	 * Main method to run the producers program
+	 * @param args
+	 */
 	public static void main(String[] args) {
 
 		try {

@@ -12,7 +12,7 @@ import javax.jms.*;
  * All the implemented methods ensure concurrent access to receive queue messages asynchronously.
  * <p>
  * @authors Juan Antonio Ortega Aparicio & César Borao Moratinos
- * @version 1.0, 10/05/2021
+ * @version 2.0, 17/05/2021
  */
 public class P2PAsyncReceiver implements Callable<String>, MessageListener{
 
@@ -26,6 +26,7 @@ public class P2PAsyncReceiver implements Callable<String>, MessageListener{
 	private String statusMsg;					  // To return the status message to the pool executor
 	
 	
+	
 	/**
 	 * Constructor method of P2PAsyncReceiver class with parameters.
 	 * It requires the common parameters to all the consumer threads.
@@ -33,7 +34,6 @@ public class P2PAsyncReceiver implements Callable<String>, MessageListener{
 	 * @param factory the factory where we want to open a new connection
 	 * @param queue the queue with the messages
 	 */
-	
 	public P2PAsyncReceiver(QueueConnectionFactory factory, Queue queue){
 		this.factory = factory;
 		this.queue = queue;
@@ -41,86 +41,82 @@ public class P2PAsyncReceiver implements Callable<String>, MessageListener{
 		statusMsg = "WARNING, consumer thread closed without a 'CLOSE' message: ";
 	}
 
-//	
-//	private synchronized void linkListener(QueueReceiver receiver) {
-//		try {
-//			receiver.setMessageListener(this);
-//		} catch (JMSException e) {
-//			e.printStackTrace();
-//		}
-//	}
-	
+
 	/**
-	 * Overridden method from Callable that establish a new concurrent connection with the Payara Server.
-	 * It represents the consumer concurrent method in producer/consumer pattern.
+	 * Overridden method from {@link java.util.concurrent.Callable<V>} that establish a new concurrent connection with the Payara Server.
+	 * It represents the consumer method in producer/consumer pattern.
 	 */
 	@Override
 	public String call(){
-		
+
 		try {  
-			
+
+			// Create a new connection to the factory
 			QueueConnection connection = factory.createQueueConnection();
-			
-			// Create session and activate auto-commit
+
+			// Create session and activate auto-ack
 			QueueSession session = 
 					connection.createQueueSession(false, QueueSession.AUTO_ACKNOWLEDGE);
-			
+
 			// Creating receiver and link it to a Message Listener (to handle messages asynchronously)
 			QueueReceiver receiver = session.createReceiver(queue);
 			receiver.setMessageListener(this);
-//			linkListener(receiver);
-			
-			
+
 			// Start the connection and print in which Thread is the consumer listening
 			connection.start();
 			System.out.println("Thread " + Thread.currentThread().getId() + " listening!");
-			
+
 			// While we don't receive the STOP message the thread keep listening
 			while (!stopFlag) {
 				Thread.sleep(MILISLEEP);
 			}
-			
-			// When we have received the "CLOSE" message, we close the connection and return the status message
+
+			// When we have received the "CLOSE" message, we close the connection and set the status message
 			System.err.println("Closing receiver connection...");
 			connection.close(); 
-			statusMsg = "SUCCESS, consumer thread ended: ";
+
 			System.err.println("TRACE: Return Thread " + Thread.currentThread().getId());
-			
+			statusMsg = "SUCCESS, consumer thread ended: ";
+
 		} catch (JMSException ex) {
 			ex.printStackTrace();
 		} catch (InterruptedException ex) {
 			Thread.currentThread().interrupt();
 		}
+		
 		return statusMsg + Thread.currentThread().getId();
 	}
 
-	
+
 	/**
 	 * Overridden method to handle received messages (asynchronously)
 	 * 
 	 * @param msg the message to handle
 	 */
 	@Override
-	public synchronized void onMessage(Message msg) {
-		
-		//synchronized
+	public void onMessage(Message msg) {
+
 		try {
 			TextMessage m = (TextMessage)msg;
-			
+
 			if (Objects.equals(m.getText(), STOP)){
 				System.err.println("No more messages. Closing now listener running in thread: " + Thread.currentThread().getId());
-			
-				//Enable condition to stop current Thread
+
 				stopFlag = true; 
 				
+				// To avoid receive other "CLOSE" messages before closing the connection
+				Thread.sleep(MILISLEEP);;
+
 			} else {
 				System.out.println("Listener, Thread " + 
 						Thread.currentThread().getId() +
 						" message received: " + m.getText());
 			}
-			
+
 		} catch (JMSException ex) {
 			ex.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
 	}
 }

@@ -64,6 +64,7 @@ public class RunConsumersTest {
 		}
 	}
 
+	
 	/**
 	 * Method to fill the result list with the threads' execution results.
 	 * It uses the {@link java.util.concurrent.Callable<V>} to know the result of the 
@@ -87,9 +88,12 @@ public class RunConsumersTest {
 		} 
 	}
 	
+	/**
+	 * Main method to run the consumers program
+	 * @param args
+	 */
 	public static void main(String[] args) {
 
-		
 		try {
 			
 			// Recover initial context (JNDI)	

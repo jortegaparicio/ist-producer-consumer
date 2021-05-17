@@ -7,7 +7,7 @@ import javax.jms.*;
  * <h1>P2PSender class</h1>
  * 
  * <p> The P2PSender class models a JMS producer in the producer-consumer scheme.
- * All the implemented methods ensure concurrent access to send messages to the queue
+ * All the implemented methods ensure concurrent access to send messages to the queue.
  * <p>
  * @authors Juan Antonio Ortega Aparicio & César Borao Moratinos
  * @version 1.0, 10/05/2021
@@ -15,13 +15,12 @@ import javax.jms.*;
 public class P2PSender implements Callable<String> {		
 
 	private static final String QUEUE_NAME   = "Cola1";  // Queue name
-	private static final int    NMESSAGE    = 3;        // Number of messages 
-	private static final int    MILISLEEP   = 1000;     // ms sleeping time      
+	private static final int    NMESSAGE    = 3;         // Number of messages 
+	private static final int    MILISLEEP   = 1000;      // ms sleeping time      
 
-	private QueueConnectionFactory factory;				// Factory where we create the connections
-	private Queue queue;						  		// Queue where we receive messages
-	private String statusMsg;					  		// To return the status message to the pool executor
-	
+	private QueueConnectionFactory factory;				 // Factory where we create the connections
+	private Queue queue;						  		 // Queue where we receive messages
+	private String statusMsg;					  		 // To return the status message to the pool executor
 	
 	
 	/**
@@ -38,8 +37,8 @@ public class P2PSender implements Callable<String> {
 	}
 
 	/**
-	 * Method that overrides call() method from Callable.
-	 * It represents the producer concurrent method in producer/consumer pattern.
+	 * Method that overrides call() method from {@link java.util.concurrent.Callable<V>}.
+	 * It represents the producer method in producer/consumer pattern.
 	 */
 	@Override
 	public String call() {
