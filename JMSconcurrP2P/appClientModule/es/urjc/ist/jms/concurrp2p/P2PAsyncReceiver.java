@@ -104,7 +104,7 @@ public class P2PAsyncReceiver implements Callable<String>, MessageListener{
 
 				stopFlag = true; 
 				
-				// To avoid receive other "CLOSE" messages before closing the connection
+				// To avoid receive other "CLOSE" messages before closing the consumer connection
 				Thread.sleep(MILISLEEP);;
 
 			} else {

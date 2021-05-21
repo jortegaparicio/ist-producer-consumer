@@ -15,7 +15,7 @@
 	- RunProducersTest -
 	
 	En esta clase se ha implementado un procedimiento principal mediante el cual lanzamos en un pool N productores (N viene definido en la constante
-	NPRODUCERS en el código). Dichos productores ejecutarán de forma concurrente el código implementado en la clase P2PAsyncReceiver.
+	NPRODUCERS en el código). Dichos productores ejecutarán de forma concurrente el código implementado en la clase P2PSender.
 	Finalmente, esperaremos a que termine el pool de hilos lanzados y recogemos los resultados de la ejecución de los hilos productores mediante el método RecoverResults().
 	
 	- RunConsumersTest -
@@ -37,7 +37,7 @@
 	- P2PSender -
 	
 	Esta clase modela a los productores y está pensada como una tarea para poder montarla sobre un hilo. Por ello, implementa la interfaz Runnable (nuevamente, hemos elegido Runnable antes que Callable por la ventaja que supone conocer el resultado de la ejecución de los hilos).
-	Cada productor envía tres mensajes a la Cola, seguidos por un mensaje de CLOSE. POsteriormente cierra la conexión y retorna el status.
+	Cada productor envía tres mensajes a la Cola, seguidos por un mensaje de CLOSE. Posteriormente cierra la conexión y retorna el status.
 		
 	
 	Toda la estructura del programa se ejecutará sobre Payara Server, un servidor de aplicaciones que proporciona soporte para JMS.

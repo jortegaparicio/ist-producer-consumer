@@ -27,7 +27,7 @@ import javax.naming.NamingException;
 public class RunProducersTest {
 
 	// Parameter to select the number of producers running concurrently in the thread pool
-	private static final int NPRODUCERS = 15;
+	private static final int NPRODUCERS = 20;
 	
 	// Pool of Queue connections
 	private static final String FACTORY_NAME = "Factoria1";

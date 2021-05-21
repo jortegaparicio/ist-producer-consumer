@@ -26,7 +26,7 @@ import javax.naming.NamingException;
 public class RunConsumersTest {
 
 	// Parameter to select the number of consumers running concurrently in the thread pool
-	private static final int NCONSUMERS = 15;
+	private static final int NCONSUMERS = 10;
 
 	// Pool of Queue connections
 	private static final String FACTORY_NAME = "Factoria1"; 	
