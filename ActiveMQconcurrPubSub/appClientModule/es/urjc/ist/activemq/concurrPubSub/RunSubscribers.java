@@ -7,9 +7,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
-
+//  * <h1>RunSubscribers class</h1>
 /**
- * <h1>RunSubscribers class</h1>
  * 
  * <p> The RunSubscribers class launches N concurrent subscribers for 
  * the publisher/subscriber pattern.

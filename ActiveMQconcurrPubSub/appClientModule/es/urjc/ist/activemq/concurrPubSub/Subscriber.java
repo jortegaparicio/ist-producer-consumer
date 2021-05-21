@@ -13,9 +13,8 @@ import javax.jms.MessageConsumer;
 import javax.jms.MessageListener;
 import javax.jms.Session;
 import javax.jms.TextMessage;
-
+// * <h1>Subscriber class</h1>
 /**
- * <h1>Subscriber class</h1>
  * 
  * <p> The Subscriber class models a publisher in the Publisher/Subscriber pattern.<p>
  * 

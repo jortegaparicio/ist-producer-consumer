@@ -8,8 +8,9 @@ import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 
+//  * <h1>Publisher class</h1>
+
 /**
- * <h1>Publisher class</h1>
  * 
  * <p> The Publisher class models a publisher in the Publisher/Subscriber pattern.
  * <p>
