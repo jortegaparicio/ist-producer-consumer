@@ -12,9 +12,8 @@ import javax.jms.Queue;
 import javax.jms.QueueConnectionFactory;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-
+// * <h1>RunProducersTest class</h1>
 /**
- * <h1>RunProducersTest class</h1>
  * 
  * <p> The RunProducersTest class models a JMS pool of producers that will run concurrently.
  * This method creates the JMS environment to run sender tasks over the thread pool and pick up the execution results.

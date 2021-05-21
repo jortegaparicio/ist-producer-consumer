@@ -12,9 +12,8 @@ import javax.jms.Queue;
 import javax.jms.QueueConnectionFactory;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-
+// * <h1>RunConsumersTest class</h1>
 /**
- * <h1>RunConsumersTest class</h1>
  * 
  * <p> The RunConsumersTest class models a JMS pool of consumers that will run concurrently.
  * This method creates the JMS environment to run consumer tasks over the thread pool and pick up the execution results.

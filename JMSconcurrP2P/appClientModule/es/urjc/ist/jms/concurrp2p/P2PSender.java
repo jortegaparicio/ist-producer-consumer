@@ -2,9 +2,8 @@ package es.urjc.ist.jms.concurrp2p;
 
 import java.util.concurrent.Callable;
 import javax.jms.*;
-
+// * <h1>P2PSender class</h1>
 /**
- * <h1>P2PSender class</h1>
  * 
  * <p> The P2PSender class models a JMS producer in the producer-consumer scheme.
  * All the implemented methods ensure concurrent access to send messages to the queue.

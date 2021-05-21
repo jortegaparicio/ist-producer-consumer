@@ -4,9 +4,8 @@ import java.util.concurrent.Callable;
 import java.util.Objects;
 import javax.jms.*;
 
-
+//  * <h1>P2PAsyncReceiver class</h1>
 /**
- * <h1>P2PAsyncReceiver class</h1>
  * 
  * <p> The P2PAsyncReceiver class models a JMS asynchronous receiver (consumer) in the producer-consumer scheme.
  * All the implemented methods ensure concurrent access to receive queue messages asynchronously.
