@@ -25,7 +25,7 @@ import javax.naming.NamingException;
 public class RunConsumersTest {
 
 	// Parameter to select the number of consumers running concurrently in the thread pool
-	private static final int NCONSUMERS = 10;
+	private static final int NCONSUMERS = 30;
 
 	// Pool of Queue connections
 	private static final String FACTORY_NAME = "Factoria1"; 	
@@ -38,7 +38,6 @@ public class RunConsumersTest {
 
 	// Initialize the result list
 	private static List<Future<String>> ConsResultList = new ArrayList<Future<String>>(NCONSUMERS);
-	
 	
 	/**
 	 * Method to close the ExecutorService in two stages: first avoiding running new

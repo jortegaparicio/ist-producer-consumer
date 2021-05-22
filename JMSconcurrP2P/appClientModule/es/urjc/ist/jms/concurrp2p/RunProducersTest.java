@@ -12,7 +12,7 @@ import javax.jms.Queue;
 import javax.jms.QueueConnectionFactory;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-// * <h1>RunProducersTest class</h1>
+
 /**
  * 
  * <p> The RunProducersTest class models a JMS pool of producers that will run concurrently.
@@ -26,7 +26,7 @@ import javax.naming.NamingException;
 public class RunProducersTest {
 
 	// Parameter to select the number of producers running concurrently in the thread pool
-	private static final int NPRODUCERS = 20;
+	private static final int NPRODUCERS = 30;
 	
 	// Pool of Queue connections
 	private static final String FACTORY_NAME = "Factoria1";

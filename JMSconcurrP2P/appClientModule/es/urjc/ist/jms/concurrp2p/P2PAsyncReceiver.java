@@ -4,12 +4,11 @@ import java.util.concurrent.Callable;
 import java.util.Objects;
 import javax.jms.*;
 
-//  * <h1>P2PAsyncReceiver class</h1>
 /**
  * 
- * <p> The P2PAsyncReceiver class models a JMS asynchronous receiver (consumer) in the producer-consumer scheme.
- * All the implemented methods ensure concurrent access to receive queue messages asynchronously.
- * <p>
+ * <p> The P2PAsyncReceiver class models a JMS asynchronous receiver (consumer) in the producer-consumer scheme.</p>
+ * <p> All the implemented methods ensure concurrent access to receive queue messages asynchronously.</p>
+ * 
  * @authors Juan Antonio Ortega Aparicio & César Borao Moratinos
  * @version 2.0, 17/05/2021
  */
@@ -18,12 +17,11 @@ public class P2PAsyncReceiver implements Callable<String>, MessageListener{
 	private static final int MILISLEEP = 1000;    // ms sleeping time
 	private static final String STOP   = "CLOSE"; // Message to stop Consumer threads
 
-	private QueueConnectionFactory factory;		  // Factory where we create the connections
+	private QueueConnectionFactory factory;		  // Factory where we create the connections (with Payara)
 	private Queue queue;						  // Queue where we receive messages
 	private boolean stopFlag;					  // Flag that stops the Threads
 	
 	private String statusMsg;					  // To return the status message to the pool executor
-	
 	
 	
 	/**
@@ -37,12 +35,14 @@ public class P2PAsyncReceiver implements Callable<String>, MessageListener{
 		this.factory = factory;
 		this.queue = queue;
 		stopFlag = false;
+		
+		// Default status message: if run successfully, this message changes to "SUCCESS"
 		statusMsg = "WARNING, consumer thread closed without a 'CLOSE' message: ";
 	}
 
 
 	/**
-	 * Overridden method from @see java.util.concurrent.Callable<V>#call() that establish a new concurrent connection with the Payara Server.
+	 * Overridden method from {@link java.util.concurrent.Callable#call() } that establish a new concurrent connection with the Payara Server.
 	 * It represents the consumer method in producer/consumer pattern.
 	 */
 	@Override
@@ -104,7 +104,7 @@ public class P2PAsyncReceiver implements Callable<String>, MessageListener{
 				stopFlag = true; 
 				
 				// To avoid receive other "CLOSE" messages before closing the consumer connection
-				Thread.sleep(MILISLEEP);;
+				Thread.sleep(MILISLEEP);
 
 			} else {
 				System.out.println("Listener, Thread " + 
