@@ -10,8 +10,8 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 /**
  * 
  * <p> The RunPublishers class launches N concurrent publishers for 
- * the publisher/subscriber pattern.
- * <p>
+ * the publisher/subscriber pattern. </p>
+ *
  * @authors César Borao Moratinos & Juan Antonio Ortega Aparicio
  * @version 1.0, 16/05/2021
  */
@@ -20,8 +20,12 @@ public class RunPublishers {
 	// Parameter to select the number of publishers running concurrently in the thread pool
 	private static final int NPUBLISHERS = 15;	
 	
-	// Run ActiveMQ service as independent process. The URL of the JMS server is on "tcp://localhost:61616"
+	// Run ActiveMQ service as independent process. The URL of the JMS server is on "tcp://localhost:8161"
     private static String url = ActiveMQConnection.DEFAULT_BROKER_URL;  
+	
+	// Timeout values to end the thread pool
+	private static final int FIRST_TIMEOUT = 60;
+	private static final int SECOND_TIMEOUT = 60;
 	
 	// Create a new thread pool to run publishers concurrently
 	private static ExecutorService PubPool = Executors.newFixedThreadPool(NPUBLISHERS);
@@ -73,7 +77,7 @@ public class RunPublishers {
 			}
 
 			// Closing thread pool
-			shutdownAndAwaitTermination(60, 60);
+			shutdownAndAwaitTermination(FIRST_TIMEOUT, SECOND_TIMEOUT);
 	
 			
 		} catch (Exception e) {

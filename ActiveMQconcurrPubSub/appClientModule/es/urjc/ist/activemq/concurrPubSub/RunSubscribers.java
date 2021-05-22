@@ -11,8 +11,8 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 /**
  * 
  * <p> The RunSubscribers class launches N concurrent subscribers for 
- * the publisher/subscriber pattern.
- * <p>
+ * the publisher/subscriber pattern.</p>
+ * 
  * @authors César Borao Moratinos & Juan Antonio Ortega Aparicio
  * @version 1.0, 16/05/2021
  */
@@ -21,8 +21,12 @@ public class RunSubscribers {
 	// Parameter to select the number of subscribers running concurrently in the thread pool
 	private static final int NSUBS = 10;	
 	
-	// Run ActiveMQ service as independent process. The URL of the JMS server is on "tcp://localhost:61616"
+	// Run ActiveMQ service as independent process. The URL of the JMS server is on "tcp://localhost:8161"
     private static String url = ActiveMQConnection.DEFAULT_BROKER_URL; 
+	
+	// Timeout values to end the thread pool
+	private static final int FIRST_TIMEOUT = 60;
+	private static final int SECOND_TIMEOUT = 60;
 	
     // Create a new thread pool to run subscribers concurrently
 	private static ExecutorService SubPool = Executors.newFixedThreadPool(NSUBS);
@@ -65,7 +69,7 @@ public class RunSubscribers {
 			for (int count = 0; count < NSUBS; count++) {
 
 				// Asynchronous subscriber is created here 
-				Subscriber subscriber = new Subscriber(connectionFactory);
+				AsyncSubscriber subscriber = new AsyncSubscriber(connectionFactory);
 
 				// Run subscriber
 				SubPool.submit(subscriber); 
@@ -77,7 +81,7 @@ public class RunSubscribers {
 		} finally {
 			
 			// Closing thread pool
-			shutdownAndAwaitTermination(60, 60);
+			shutdownAndAwaitTermination(FIRST_TIMEOUT, SECOND_TIMEOUT);
 		}
 
 		System.err.println("\nEND");

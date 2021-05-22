@@ -13,15 +13,14 @@ import javax.jms.MessageConsumer;
 import javax.jms.MessageListener;
 import javax.jms.Session;
 import javax.jms.TextMessage;
-// * <h1>Subscriber class</h1>
+
 /**
- * 
- * <p> The Subscriber class models a publisher in the Publisher/Subscriber pattern.<p>
+ * <p> The Subscriber class models a publisher in the Publisher/Subscriber pattern.</p>
  * 
  * @authors César Borao Moratinos & Juan Antonio Ortega Aparicio
  * @version 1.0, 16/05/2021
  */
-public class Subscriber implements Runnable, ExceptionListener, MessageListener{
+public class AsyncSubscriber implements Runnable, ExceptionListener, MessageListener{
 	
 	
 	private static final String TOPIC_NAME = "Topic"; 	  // Name of our Topic
@@ -36,7 +35,7 @@ public class Subscriber implements Runnable, ExceptionListener, MessageListener{
 	 * Constructor method to Subscriber class
 	 * @param connectionFactory
 	 */
-	public Subscriber(ActiveMQConnectionFactory connectionFactory) {
+	public AsyncSubscriber(ActiveMQConnectionFactory connectionFactory) {
 		this.connectionFactory = connectionFactory;
 		stopFlag = false;
 	}
@@ -110,6 +109,6 @@ public class Subscriber implements Runnable, ExceptionListener, MessageListener{
     }
     
     public synchronized void onException(JMSException ex) {
-        System.out.println("JMS Exception occured.  Shutting down client.");
+        System.err.println("JMS Exception occured.  Shutting down client.");
     }
 }
