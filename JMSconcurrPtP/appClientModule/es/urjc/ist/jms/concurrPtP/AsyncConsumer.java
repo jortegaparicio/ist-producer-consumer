@@ -7,8 +7,8 @@ import javax.jms.*;
 /**
  * 
  * <p> The P2PAsyncReceiver class models a JMS asynchronous receiver (consumer) in the producer-consumer scheme.
- * All the implemented methods ensure concurrent access to receive queue messages asynchronously.</p>
- * 
+ * All the implemented methods ensure concurrent access to receive queue messages asynchronously.
+ * </p>
  * @authors Juan Antonio Ortega Aparicio & César Borao Moratinos
  * @version 2.0, 17/05/2021
  */
@@ -22,6 +22,7 @@ public class AsyncConsumer implements Callable<String>, MessageListener{
 	private boolean stopFlag;					  // Flag that stops the Threads
 	
 	private String statusMsg;					  // To return the status message to the pool executor
+	
 	
 	
 	/**
@@ -42,7 +43,7 @@ public class AsyncConsumer implements Callable<String>, MessageListener{
 
 
 	/**
-	 * Overridden method from {@link java.util.concurrent.Callable#call() } that establish a new concurrent connection with the Payara Server.
+	 * Overridden method from Callable that establish a new concurrent connection with the Payara Server.
 	 * It represents the consumer method in producer/consumer pattern.
 	 */
 	@Override

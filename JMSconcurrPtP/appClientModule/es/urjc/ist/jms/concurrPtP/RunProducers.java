@@ -53,9 +53,9 @@ public class RunProducers {
 	 * @param secondTimeout Timeout to the second waiting stage.
 	 */
 	private static void shutdownAndAwaitTermination(int firstTimeout, int secondTimeout) {
-		ProdPool.shutdown(); 
+	 
 		try {
-
+			ProdPool.shutdown();
 			if (!ProdPool.awaitTermination(firstTimeout, TimeUnit.SECONDS)) {
 				System.err.println("Uncompleted tasks. forcing closure...");
 				ProdPool.shutdownNow(); 
@@ -71,8 +71,7 @@ public class RunProducers {
 	
 	/**
 	 * Method to fill the result list with the threads' execution results.
-	 * It uses the @see java.util.concurrent.Callable<V> to know the result of the 
-	 * producers' execution.
+	 * It uses the Callable interface to know the result of the producers' execution.
 	 */
 	private static void recoverResults() {
 		
@@ -123,14 +122,15 @@ public class RunProducers {
 		} catch (NamingException e) {
 			System.out.println("Producers's Test finished with error: ");
 			e.printStackTrace();
-		}
-		
-		// Closing thread pool
-		shutdownAndAwaitTermination(FIRST_TIMEOUT, SECOND_TIMEOUT);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			// Closing thread pool
+			shutdownAndAwaitTermination(FIRST_TIMEOUT, SECOND_TIMEOUT);
 
-		// Recovering results
-		recoverResults();
-		
+			// Recovering results
+			recoverResults();
+		}
 		System.err.println("\nEND");
 	}
 }

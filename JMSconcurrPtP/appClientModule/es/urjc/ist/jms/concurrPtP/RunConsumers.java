@@ -43,6 +43,7 @@ public class RunConsumers {
 	// Initialize the result list
 	private static List<Future<String>> ConsResultList = new ArrayList<Future<String>>(NCONSUMERS);
 	
+	
 	/**
 	 * Method to close the ExecutorService in two stages: first avoiding running new
 	 * tasks in the pool and after, requesting the tasks running to finish.
@@ -51,9 +52,9 @@ public class RunConsumers {
 	 * @param secondTimeout Timeout to the second waiting stage.
 	 */
 	private static void shutdownAndAwaitTermination(int firstTimeout, int secondTimeout) {
-		ConsPool.shutdown(); 
-		
+	
 		try {
+			ConsPool.shutdown(); 
 			if (!ConsPool.awaitTermination(firstTimeout, TimeUnit.SECONDS)) {
 				System.err.println("Uncompleted tasks. forcing closure...");
 				ConsPool.shutdownNow(); 
@@ -66,6 +67,7 @@ public class RunConsumers {
 		}
 	}
 
+	
 	/**
 	 * Method to fill the result list with the threads' execution results.
 	 * It uses the @see java.util.concurrent.Callable<V> to know the result of the 
@@ -88,6 +90,7 @@ public class RunConsumers {
 			}
 		} 
 	}
+	
 	
 	/**
 	 * Main method to run the consumers program
@@ -119,13 +122,15 @@ public class RunConsumers {
 		} catch (NamingException ex) {
 			System.err.println("Consumer's Test finished with error: ");
 			ex.printStackTrace();
-		
-		}
-		// Closing thread pool
-		shutdownAndAwaitTermination(FIRST_TIMEOUT, SECOND_TIMEOUT);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			// Closing thread pool
+			shutdownAndAwaitTermination(FIRST_TIMEOUT, SECOND_TIMEOUT);
 
-		// Recovering results
-		recoverResults();
+			// Recovering results
+			recoverResults();
+		}
 		
 		System.err.println("\nEND");
 	}

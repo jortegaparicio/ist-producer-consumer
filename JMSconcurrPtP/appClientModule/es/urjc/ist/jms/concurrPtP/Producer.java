@@ -6,7 +6,7 @@ import javax.jms.*;
 /**
  * <p> The P2PSender class models a JMS producer in the producer-consumer scheme.
  * All the implemented methods ensure concurrent access to send messages to the queue.
- * <p>
+ * </p>
  * @authors Juan Antonio Ortega Aparicio & César Borao Moratinos
  * @version 1.0, 10/05/2021
  */
@@ -19,7 +19,8 @@ public class Producer implements Callable<String> {
 	private QueueConnectionFactory factory;				 // Factory where we create the connections
 	private Queue queue;						  		 // Queue where we receive messages
 	private String statusMsg;					  		 // To return the status message to the pool executor
-	
+
+
 	
 	/**
 	 * Constructor method of P2PSender class with parameters
@@ -34,6 +35,7 @@ public class Producer implements Callable<String> {
 		statusMsg = "ERROR: Sender in thread: ";
 	}
 
+	
 	/**
 	 * Method that overrides call() method from @see java.util.concurrent.Callable<V>.
 	 * It represents the producer method in producer/consumer pattern.
@@ -44,7 +46,7 @@ public class Producer implements Callable<String> {
 		try {
 			// Create new connection for the producer thread
 			QueueConnection connection = factory.createQueueConnection();
-			
+
 			// Create session and activate auto-ack
 			QueueSession session = connection.createQueueSession(false,
 					QueueSession.AUTO_ACKNOWLEDGE);	
@@ -55,7 +57,7 @@ public class Producer implements Callable<String> {
 			// Creating and sending messages to the queue
 			TextMessage msg = session.createTextMessage();
 			for(int i = 0; i < NMESSAGE; i++){
-				
+
 				msg.setText("Message number " + i + " to " + "Cola1");
 				sender.send(msg);
 				System.out.println("Thread " + Thread.currentThread().getId() + 
@@ -78,7 +80,7 @@ public class Producer implements Callable<String> {
 		} catch (InterruptedException ex) {
 			ex.printStackTrace();
 		} 
-		
+
 		System.err.println("Closing sender connection ...");
 		return statusMsg + Thread.currentThread().getId();
 	}
