@@ -1,4 +1,4 @@
-package es.urjc.ist.jms.concurrp2p;
+package es.urjc.ist.jms.concurrPtP;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,26 +12,30 @@ import javax.jms.Queue;
 import javax.jms.QueueConnectionFactory;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-// * <h1>RunConsumersTest class</h1>
+
 /**
  * 
  * <p> The RunConsumersTest class models a JMS pool of consumers that will run concurrently.
  * This method creates the JMS environment to run consumer tasks over the thread pool and pick up the execution results.
  * The implementation allow the consumers to receive messages of a common queue.
- * <p>
+ * </p>
  * @authors Juan Antonio Ortega Aparicio & César Borao Moratinos
  * @version 1.0, 10/05/2021
  */
-public class RunConsumersTest {
+public class RunConsumers {
 
 	// Parameter to select the number of consumers running concurrently in the thread pool
-	private static final int NCONSUMERS = 30;
+	private static final int NCONSUMERS = 10;
 
 	// Pool of Queue connections
 	private static final String FACTORY_NAME = "Factoria1"; 	
 
 	// Ordered message Queue
 	private static final String QUEUE_NAME = "Cola1"; 
+	
+	// Timeout values to end the thread pool
+	private static final int FIRST_TIMEOUT = 60;
+	private static final int SECOND_TIMEOUT = 60;
 	
 	// Create a new thread pool to run producers concurrently
 	private static ExecutorService ConsPool = Executors.newFixedThreadPool(NCONSUMERS);
@@ -90,7 +94,7 @@ public class RunConsumersTest {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-
+		
 		try {
 			
 			// Recover initial context (JNDI)	
@@ -106,7 +110,7 @@ public class RunConsumersTest {
 			// Running consumers over the thread pool
 			for (int count = 0; count < NCONSUMERS; count++) {
 
-				P2PAsyncReceiver receiver = new P2PAsyncReceiver(factory, queue);
+				AsyncConsumer receiver = new AsyncConsumer(factory, queue);
 				
 				// We run a pool thread with the task and add the result to the result list
 				ConsResultList.add(ConsPool.submit(receiver)); 
@@ -118,7 +122,7 @@ public class RunConsumersTest {
 		
 		}
 		// Closing thread pool
-		shutdownAndAwaitTermination(60, 60);
+		shutdownAndAwaitTermination(FIRST_TIMEOUT, SECOND_TIMEOUT);
 
 		// Recovering results
 		recoverResults();

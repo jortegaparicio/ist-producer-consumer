@@ -1,4 +1,4 @@
-package es.urjc.ist.jms.concurrp2p;
+package es.urjc.ist.jms.concurrPtP;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,15 +18,15 @@ import javax.naming.NamingException;
  * <p> The RunProducersTest class models a JMS pool of producers that will run concurrently.
  * This method creates the JMS environment to run sender tasks over the thread pool and pick up the execution results.
  * The implementation allow the producers to send messages to the same queue.
- * <p>
+ * </p>
  * @authors Juan Antonio Ortega Aparicio & César Borao Moratinos
  * @version 1.0, 10/05/2021
  * 
  */
-public class RunProducersTest {
+public class RunProducers {
 
 	// Parameter to select the number of producers running concurrently in the thread pool
-	private static final int NPRODUCERS = 30;
+	private static final int NPRODUCERS = 10;
 	
 	// Pool of Queue connections
 	private static final String FACTORY_NAME = "Factoria1";
@@ -34,6 +34,10 @@ public class RunProducersTest {
 	// Ordered message Queue
 	private static final String QUEUE_NAME = "Cola1"; 		
 
+	// Timeout values to end the thread pool
+	private static final int FIRST_TIMEOUT = 60;
+	private static final int SECOND_TIMEOUT = 60;
+	
 	// Create a new thread pool to run producers concurrently
 	private static ExecutorService ProdPool = Executors.newFixedThreadPool(NPRODUCERS);
 
@@ -110,7 +114,7 @@ public class RunProducersTest {
 			// Running producers over the thread pool
 			for (int count = 0; count < NPRODUCERS; count++) {
 
-				P2PSender sender = new P2PSender(factory, queue);
+				Producer sender = new Producer(factory, queue);
 
 				// We run a pool thread with the task and add the running result to the result list
 				ProdResultList.add(ProdPool.submit(sender)); 
@@ -122,7 +126,7 @@ public class RunProducersTest {
 		}
 		
 		// Closing thread pool
-		shutdownAndAwaitTermination(60, 60);
+		shutdownAndAwaitTermination(FIRST_TIMEOUT, SECOND_TIMEOUT);
 
 		// Recovering results
 		recoverResults();

@@ -1,4 +1,4 @@
-package es.urjc.ist.jms.concurrp2p;
+package es.urjc.ist.jms.concurrPtP;
 
 import java.util.concurrent.Callable;
 import java.util.Objects;
@@ -6,13 +6,13 @@ import javax.jms.*;
 
 /**
  * 
- * <p> The P2PAsyncReceiver class models a JMS asynchronous receiver (consumer) in the producer-consumer scheme.</p>
- * <p> All the implemented methods ensure concurrent access to receive queue messages asynchronously.</p>
+ * <p> The P2PAsyncReceiver class models a JMS asynchronous receiver (consumer) in the producer-consumer scheme.
+ * All the implemented methods ensure concurrent access to receive queue messages asynchronously.</p>
  * 
  * @authors Juan Antonio Ortega Aparicio & César Borao Moratinos
  * @version 2.0, 17/05/2021
  */
-public class P2PAsyncReceiver implements Callable<String>, MessageListener{
+public class AsyncConsumer implements Callable<String>, MessageListener{
 
 	private static final int MILISLEEP = 1000;    // ms sleeping time
 	private static final String STOP   = "CLOSE"; // Message to stop Consumer threads
@@ -31,7 +31,7 @@ public class P2PAsyncReceiver implements Callable<String>, MessageListener{
 	 * @param factory the factory where we want to open a new connection
 	 * @param queue the queue with the messages
 	 */
-	public P2PAsyncReceiver(QueueConnectionFactory factory, Queue queue){
+	public AsyncConsumer(QueueConnectionFactory factory, Queue queue){
 		this.factory = factory;
 		this.queue = queue;
 		stopFlag = false;
@@ -104,7 +104,7 @@ public class P2PAsyncReceiver implements Callable<String>, MessageListener{
 				stopFlag = true; 
 				
 				// To avoid receive other "CLOSE" messages before closing the consumer connection
-				Thread.sleep(MILISLEEP);
+				Thread.sleep(MILISLEEP); //MILISLEEP
 
 			} else {
 				System.out.println("Listener, Thread " + 

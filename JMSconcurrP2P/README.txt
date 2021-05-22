@@ -41,7 +41,7 @@
 		
 	
 	Toda la estructura del programa se ejecutará sobre Payara Server, un servidor de aplicaciones que proporciona soporte para JMS.
+	Todo el programa se encuentra parametrizado para poder cambiar el valor del número de producers y consumers. Se asume que el usuario introducirá valores permitidos en dichos parámetros, como que el número de producers y de consumers es mayor o igual a cero.
 	
-
-  
+	
 

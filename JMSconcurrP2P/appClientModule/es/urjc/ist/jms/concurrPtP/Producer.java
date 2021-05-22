@@ -1,4 +1,4 @@
-package es.urjc.ist.jms.concurrp2p;
+package es.urjc.ist.jms.concurrPtP;
 
 import java.util.concurrent.Callable;
 import javax.jms.*;
@@ -10,7 +10,7 @@ import javax.jms.*;
  * @authors Juan Antonio Ortega Aparicio & César Borao Moratinos
  * @version 1.0, 10/05/2021
  */
-public class P2PSender implements Callable<String> {		
+public class Producer implements Callable<String> {		
 
 	private static final String QUEUE_NAME   = "Cola1";  // Queue name
 	private static final int    NMESSAGE    = 3;         // Number of messages 
@@ -28,7 +28,7 @@ public class P2PSender implements Callable<String> {
 	 * @param factory the factory where we want to open a new connection
 	 * @param queue the queue where we want to send the messages
 	 */
-	public P2PSender(QueueConnectionFactory factory, Queue queue) {
+	public Producer(QueueConnectionFactory factory, Queue queue) {
 		this.factory = factory;
 		this.queue = queue;
 		statusMsg = "ERROR: Sender in thread: ";
@@ -45,7 +45,7 @@ public class P2PSender implements Callable<String> {
 			// Create new connection for the producer thread
 			QueueConnection connection = factory.createQueueConnection();
 			
-			// Create session and activate auto-commit
+			// Create session and activate auto-ack
 			QueueSession session = connection.createQueueSession(false,
 					QueueSession.AUTO_ACKNOWLEDGE);	
 
