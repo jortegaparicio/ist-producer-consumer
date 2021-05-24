@@ -7,6 +7,7 @@ import javax.jms.*;
  * <p> The P2PSender class models a JMS producer in the producer-consumer scheme.
  * All the implemented methods ensure concurrent access to send messages to the queue.
  * </p>
+ * 
  * @authors Juan Antonio Ortega Aparicio & César Borao Moratinos
  * @version 1.0, 10/05/2021
  */

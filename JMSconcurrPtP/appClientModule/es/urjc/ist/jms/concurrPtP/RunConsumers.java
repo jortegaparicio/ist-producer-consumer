@@ -14,11 +14,11 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 /**
- * 
  * <p> The RunConsumersTest class models a JMS pool of consumers that will run concurrently.
  * This method creates the JMS environment to run consumer tasks over the thread pool and pick up the execution results.
  * The implementation allow the consumers to receive messages of a common queue.
  * </p>
+ * 
  * @authors Juan Antonio Ortega Aparicio & César Borao Moratinos
  * @version 1.0, 10/05/2021
  */

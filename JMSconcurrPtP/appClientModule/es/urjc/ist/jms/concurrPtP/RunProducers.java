@@ -14,14 +14,13 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 /**
- * 
  * <p> The RunProducersTest class models a JMS pool of producers that will run concurrently.
  * This method creates the JMS environment to run sender tasks over the thread pool and pick up the execution results.
  * The implementation allow the producers to send messages to the same queue.
  * </p>
+ * 
  * @authors Juan Antonio Ortega Aparicio & César Borao Moratinos
  * @version 1.0, 10/05/2021
- * 
  */
 public class RunProducers {
 
